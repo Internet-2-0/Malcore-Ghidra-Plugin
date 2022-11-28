@@ -8,6 +8,8 @@ This plugin allows you to run dynamic emulation using the Malcore API. It provid
 
 #### Libraries
 
+This plugin attempts to incorporate your installed version of Python and its site-packages into Ghidras environment automatically. However, if this does not work installation steps are below:
+
 This plugin requires the requests library version 2.27.1. You can install this library by running:
 
 ```

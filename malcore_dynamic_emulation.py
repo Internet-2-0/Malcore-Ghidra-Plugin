@@ -113,11 +113,20 @@ class ApiHandler(object):
         responsible for the request to the API for analysis
         """
         headers = {"apiKey": self.api_key}
-        emulate_url = "{}/dynamicanalysis".format(self.base_url)
+        emulate_url = "{}/api/dynamicanalysis".format(self.base_url)
         data = {"filename1": open(file_path, "rb")}
         try:
             req = requests.post(emulate_url, headers=headers, files=data)
-            results = req.json()
+            is_error = req.json()["data"]["isError"]
+            if not is_error:
+                results = req.json()["data"]["response"]
+            else:
+                error_msg = req.json()["data"]["error"]
+                log(
+                    "caught error ({}) while making request to the API returning empty dict".format(error_msg),
+                    "error"
+                )
+                results = {}
         except:
             results = {}
         temp = tempfile.NamedTemporaryFile(delete=False, prefix="malcore_results_", suffix=".json")
@@ -146,7 +155,7 @@ Malware analysis made simple. v{}({})
 
 class MalcoreDynamicEmulationPlugin(object):
 
-    base_url = "http://127.0.0.1:9080"
+    base_url = "https://api.malcore.io"
 
     def __init__(self, api_key):
         self.api_key = api_key
