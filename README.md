@@ -18,6 +18,8 @@ pip2 install --user requests==2.27.1
 
 If you do not have `pip` installed for Python 2.x you can get pip from the following script: https://bootstrap.pypa.io/pip/2.7/get-pip.py
 
+__NOTE:__ `If you get an SSL error you will need to install pyopenssl version 21.0.0 as well`
+
 #### API Key
 
 In order to run this plugin you need a Malcore API key, you can get one from https://malcore.io. The API key will need to be set inside an environment variable called `MALCORE_API_KEY`

@@ -112,7 +112,11 @@ class ApiHandler(object):
         """
         responsible for the request to the API for analysis
         """
-        headers = {"apiKey": self.api_key}
+        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':TLS_AES_256_GCM_SHA384'
+        headers = {
+            "apiKey": self.api_key,
+            "User-Agent": "Malcore Ghidra Plugin"
+        }
         emulate_url = "{}/api/dynamicanalysis".format(self.base_url)
         data = {"filename1": open(file_path, "rb")}
         try:
@@ -137,20 +141,6 @@ class ApiHandler(object):
             log("error during analysis will not save empty file", "info")
         temp.close()
         return results
-
-
-TOTAL_SUSPICIOUS_CALLS = 0
-VERSION = "0.1"
-VERSION_STRING = "dev" if VERSION.count(".") > 3 else "stable"
-URL = "https://malcore.io"
-LOGO = """    __  ___      __                   
-   /  |/  /___ _/ /________  ________ 
-  / /|_/ / __ `/ / ___/ __ \/ ___/ _ \\
- / /  / / /_/ / / /__/ /_/ / /  /  __/
-/_/  /_/\\__,_/_/\\___/\\____/_/   \\___/ 
-Malware analysis made simple. v{}({})
-\t{}
-\tInternet 2.0, Ltd""".format(VERSION, VERSION_STRING, URL)
 
 
 class MalcoreDynamicEmulationPlugin(object):
@@ -195,6 +185,20 @@ class MalcoreDynamicEmulationPlugin(object):
         if len(results) == 0:
             log("dynamic emulation was not successful", "error")
         return results
+
+
+TOTAL_SUSPICIOUS_CALLS = 0
+VERSION = "0.1"
+VERSION_STRING = "dev" if VERSION.count(".") > 3 else "stable"
+URL = "https://malcore.io"
+LOGO = """    __  ___      __                   
+   /  |/  /___ _/ /________  ________ 
+  / /|_/ / __ `/ / ___/ __ \/ ___/ _ \\
+ / /  / / /_/ / / /__/ /_/ / /  /  __/
+/_/  /_/\\__,_/_/\\___/\\____/_/   \\___/ 
+Malware analysis made simple. v{}({})
+\t{}
+\tInternet 2.0, Ltd""".format(VERSION, VERSION_STRING, URL)
 
 
 def log(log_string, level="info"):
