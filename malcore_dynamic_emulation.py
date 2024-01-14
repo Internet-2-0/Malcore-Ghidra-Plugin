@@ -29,7 +29,6 @@ elif "Darwin" in os.uname():
     sys.path.append(os.path.expanduser('~') + '/Library/Python/2.7/lib/python/site-packages')
 elif os.name == "nt" or "windows" in java.lang.System.getProperty("os.name").lower():
     PLATFORM = "windows"
-    sys.path.append('C:\users\ephem\appdata\roaming\python\python27\site-packages')
     sys.path.append('C:\\Python27')
     sys.path.append('C:\\Python27\\Lib\\site-packages')
 elif os.name == "java":
