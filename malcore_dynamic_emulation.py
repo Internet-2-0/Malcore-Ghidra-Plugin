@@ -9,6 +9,7 @@ import os
 import sys
 import time
 import tempfile
+import urllib
 
 
 PLATFORM = ""
@@ -28,7 +29,8 @@ elif "Darwin" in os.uname():
     sys.path.append(os.path.expanduser('~') + '/Library/Python/2.7/lib/python/site-packages')
 elif os.name == "nt" or "windows" in java.lang.System.getProperty("os.name").lower():
     PLATFORM = "windows"
-    sys.path.append('C:\\Python27\\lib\\site-packages')
+    sys.path.append('C:\\Python27')
+    sys.path.append('C:\\Python27\\Lib\\site-packages')
 elif os.name == "java":
     PLATFORM = "other"
     sys.path.append('/usr/lib/python2.7/dist-packages')
@@ -38,12 +40,6 @@ else:
     print("failed to add correct PATH, unable to detect platform")
     exit(1)
 
-
-try:
-    import requests
-except ImportError:
-    print("you need to install the requests module version 2.27.1: `pip install --user requests==2.27.1`")
-    exit(1)
 
 
 class Formatter(object):
@@ -112,7 +108,6 @@ class ApiHandler(object):
         """
         responsible for the request to the API for analysis
         """
-        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':TLS_AES_256_GCM_SHA384'
         headers = {
             "apiKey": self.api_key,
             "User-Agent": "Malcore Ghidra Plugin"
@@ -120,7 +115,7 @@ class ApiHandler(object):
         emulate_url = "{}/api/dynamicanalysis".format(self.base_url)
         data = {"filename1": open(file_path, "rb")}
         try:
-            req = requests.post(emulate_url, headers=headers, files=data)
+            req = urllib.Request(emulate_url, data=data, headers=headers, method="POST")
             is_error = req.json()["data"]["isError"]
             if not is_error:
                 results = req.json()["data"]["response"]
@@ -214,12 +209,10 @@ def get_api_key():
     """
     gathers the API key from the associated environment variable
     """
-    env = os.environ
-    for key in env.keys():
-        if "MALCORE_API_KEY" in key:
-            return env[key]
-    log("MALCORE_API_KEY environment variable is not set with associated API key", "error")
-    return None
+    env = os.environ.get('MALCORE_API_KEY')
+    if not env:
+        log("MALCORE_API_KEY environment variable is not set with associated API key", "error")
+    return env
 
 
 def is_pe(filename):
